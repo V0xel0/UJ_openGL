@@ -190,7 +190,6 @@ void SimpleShapeApplication::frame()
 	auto PVM = mat_P_ * mat_V_;
 	// Updating matrix UBO each frame
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo_handle_matrices_);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &PVM[0]);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &mat_M_[0]);
 	glBufferSubData(GL_UNIFORM_BUFFER, 1 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_V_[0]);
 	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_P_[0]);

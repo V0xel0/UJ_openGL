@@ -58,7 +58,7 @@ public:
 		// This is much faster ans simpler solution than proposed one
 #if 1
 		m_fov -= (float)y_offset*5.5f; // float literal is just for speed of zooming
-		m_fov = glm::clamp(m_fov, 1.0f, 180.0f);
+		m_fov = glm::clamp(m_fov, 1.0f, 120.0f);
 #endif
 		// Expected solution
 #if 0
@@ -95,7 +95,32 @@ public:
 
 	void rotate_around_target(float angle, const glm::vec3 &axis)
 	{
-		rotate_around_point(angle, axis, m_target);
+		rotate_around(angle, axis, m_target);
+	}
+
+	void toggleRotation()
+	{
+		m_free_rotation = !m_free_rotation;
+	}
+
+	void move_camera_forward(float speed = 0.05f)
+	{
+		m_position -= speed * m_axis_z;
+	}
+
+	void move_camera_backward(float speed = 0.05f)
+	{
+		m_position += speed * m_axis_z;
+	}
+
+	void move_camera_right(float speed = 0.05f)
+	{
+		m_position -= glm::normalize(glm::cross(m_axis_z, { 0.0f, 1.0f, 0.0f })) * speed;
+	}
+
+	void move_camera_left(float speed = 0.05f)
+	{
+		m_position += glm::normalize(glm::cross(m_axis_z, { 0.0f, 1.0f, 0.0f })) * speed;
 	}
 
 private:
@@ -109,6 +134,8 @@ private:
 	glm::vec3 m_axis_x;
 	glm::vec3 m_axis_y;
 	glm::vec3 m_axis_z;
+
+	bool m_free_rotation = false;
 
 	glm::mat3 rotation(float angle, const glm::vec3 &axis)
 	{
@@ -131,15 +158,18 @@ private:
 		);
 	}
 
-	void rotate_around_point(float angle, const glm::vec3 &axis, const glm::vec3 &c)
+	void rotate_around(float angle, const glm::vec3 &axis, const glm::vec3 &c)
 	{
 		glm::mat3 R = rotation(angle, axis);
 		m_axis_x = R * m_axis_x;
 		m_axis_y = R * m_axis_y;
 		m_axis_z = R * m_axis_z;
 
-		glm::vec3 t = m_position - c;
-		t = R * t;
-		m_position = c + t;
+		if (!m_free_rotation)
+		{
+			glm::vec3 t = m_position - c;
+			t = R * t;
+			m_position = c + t;
+		}
 	}
 };

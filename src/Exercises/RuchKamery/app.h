@@ -25,8 +25,9 @@ public:
 	void frame() override;
 	void framebuffer_resize_callback(int w, int h) override;
 	void scroll_callback(double xoffset, double yoffset) override;
-	void SimpleShapeApplication::mouse_button_callback(int button, int action, int mods) override;
-	void SimpleShapeApplication::cursor_position_callback(double x, double y) override;
+	void mouse_button_callback(int button, int action, int mods) override;
+	void cursor_position_callback(double x, double y) override;
+	void key_callback(int key, int scancode, int action, int mods) override;
 
 private:
 	GLuint vao_;
@@ -34,6 +35,6 @@ private:
 
 	glm::mat4 mat_M_;
 
-	Camera m_camera;
-	CameraControler m_cam_control;
+	Camera m_camera{};
+	CameraControler m_cam_control{};
 };

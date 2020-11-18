@@ -113,7 +113,7 @@ void SimpleShapeApplication::init()
 	mat_M_ = glm::mat4(1.0f);
 	m_camera.set_look_at(
 		glm::vec3(0.5f, 2.0f, 1.0f),  // cam position
-		glm::vec3(0.0f, 0.0f, 0.0f),  // target position
+		glm::vec3(0.0f, 0.0f, 0.0f) , // target position
 		glm::vec3(0.0f, 1.0f, 0.0f)); // up vector)
 
 	// 1. UBO creation, copying data, linking to binding point
@@ -227,4 +227,32 @@ void SimpleShapeApplication::cursor_position_callback(double x, double y)
 {
 	Application::cursor_position_callback(x, y);
 		m_cam_control.mouse_moved(x, y);
+}
+
+void SimpleShapeApplication::key_callback(int key, int scancode, int action, int mods)
+{
+	Application::key_callback(key, scancode, action, mods);
+
+	float camSpeed = 0.05f;
+
+	if (key == GLFW_KEY_UP )
+	{
+		m_camera.move_camera_forward();
+	}
+	if (key == GLFW_KEY_DOWN )
+	{
+		m_camera.move_camera_backward();
+	}	
+	if (key == GLFW_KEY_LEFT )
+	{
+		m_camera.move_camera_left();
+	}	
+	if (key == GLFW_KEY_RIGHT)
+	{
+		m_camera.move_camera_right();
+	}
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+	{
+		m_camera.toggleRotation();
+	}
 }

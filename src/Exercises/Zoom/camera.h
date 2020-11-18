@@ -37,8 +37,8 @@ public:
 	{
 		// This is much faster ans simpler solution than proposed one
 #if 1
-		fov_ -= (float)y_offset;
-		glm::clamp(fov_, 1.0f, 180.0f);
+		fov_ -= (float)y_offset*5.5f; // float literal is just for speed of zooming
+		fov_ = glm::clamp(fov_, 1.0f, 180.0f);
 #endif
 		// Expected solution
 #if 0

@@ -4,9 +4,15 @@
 Pyramid::Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids) :
 	vert_data(verts), indices(ids)
 {
+	//(note) Doing stuff that handles external resource in constructor is not a good practice due
+	// to possible problems with RVO/NRVO - compiler can skip creating object if it is redundant
+	// even if constructor and/or destructor have side effects! Also we could easily construct/destruct
+	// two times for external resource - cause of creation of temp objects in some containers (like std::vector)
+
 	assert(verts != nullptr && ids != nullptr && "Invalid data in constructor");
 
 	GLuint vertexSize = 2 * sizeof(glm::vec3);
+	hasBeenStolen = false;
 
 	// Create VBO ID, activate, and allocate to GPU
 	glGenBuffers(1, &buffers_handles[VBO]);
@@ -43,9 +49,17 @@ Pyramid::Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids) :
 
 Pyramid::~Pyramid()
 {
-	//Tu usuwamy VAO i bufory
 	//(note) Removing in destructor is not ideal, see: https://www.khronos.org/opengl/wiki/Common_Mistakes - we need to be sure, that
 	// openGL context is still valid/active and that it was properly created
+	// Also it very very prone to pre-deletion bug if used in owning container (like std::vector) !
+
+	// If we haven't given out control of external resource to other 
+	if(!hasBeenStolen)
+	{
+		glDeleteBuffers(1, &buffers_handles[VBO]);
+		glDeleteBuffers(1, &buffers_handles[EBO]);
+		glDeleteVertexArrays(1, &vao_handle);
+	}
 }
 
 void Pyramid::draw()

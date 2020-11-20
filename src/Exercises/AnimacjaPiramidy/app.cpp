@@ -5,6 +5,7 @@
 #include "app.h"
 #include <tuple>
 #include "Application/utils.h"
+#include <utility>
 
 void SimpleShapeApplication::init()
 {
@@ -110,7 +111,7 @@ void SimpleShapeApplication::init()
 
 	// Pyramids(Mesh) creation
 	pyramids.reserve(10);
-	pyramids.push_back({ &m_vertices, &m_indices });
+	pyramids.emplace_back( &m_vertices, &m_indices );
 
 	float ubo_data_color[] = { 1.7f, 1.0f, 0.95f, 1.0f };
 

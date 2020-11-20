@@ -4,6 +4,7 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
+// This class is basically a Mesh wrapper of openGL VAO, VBO and EBO handles
 class Pyramid
 {
 	enum GL_Buffers
@@ -16,6 +17,7 @@ class Pyramid
 public:
 	Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids);
 	~Pyramid();
+
 	void draw();
 
 private:
@@ -24,4 +26,31 @@ private:
 	// not owning ptrs to raw data
 	std::vector<GLfloat> *vert_data; 
 	std::vector<GLuint> *indices;
+
+	bool hasBeenStolen;
+
+	friend void change_gl_handles_ownership(Pyramid& a, Pyramid& other)
+	{
+		a.vao_handle = other.vao_handle;
+		a.buffers_handles[VBO] = other.buffers_handles[VBO];
+		a.buffers_handles[EBO] = other.buffers_handles[EBO];
+		a.vert_data = other.vert_data;
+		a.indices = other.indices;
+		other.hasBeenStolen = true;
+	}
+
+public:
+	// Rule of 5 - prevent copy-delete bugs and double contruction
+	Pyramid(Pyramid&& other)
+	{
+		change_gl_handles_ownership(*this, other);
+	}
+	Pyramid& operator=(Pyramid&& other)
+	{
+		change_gl_handles_ownership(*this, other);
+		return *this;
+	}
+
+	Pyramid(const Pyramid&) = delete; // prevent copy constructor to be used
+	Pyramid& operator=(const Pyramid&) = delete; // prevent copy assignment to be used
 };

@@ -27,7 +27,7 @@ private:
 	std::vector<GLfloat> *vert_data; 
 	std::vector<GLuint> *indices;
 
-	bool hasBeenStolen;
+	bool has_been_stolen;
 
 	friend void change_gl_handles_ownership(Pyramid& a, Pyramid& other)
 	{
@@ -36,7 +36,7 @@ private:
 		a.buffers_handles[EBO] = other.buffers_handles[EBO];
 		a.vert_data = other.vert_data;
 		a.indices = other.indices;
-		other.hasBeenStolen = true;
+		other.has_been_stolen = true;
 	}
 
 public:

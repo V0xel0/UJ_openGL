@@ -151,22 +151,16 @@ void SimpleShapeApplication::frame()
 
 	auto mat_P = m_camera.create_projection();
 	auto mat_V = m_camera.create_view();
+	auto mat_PV = mat_P * mat_V;
 
 	// Earth Orbit
-	float earth_rotation_period = 4.0f;
-	auto rotation_angle = 2.0f*glm::pi<float>()*elapsed_seconds / earth_rotation_period;
-	float orbital_rotation_period = 20.0f;
-	float a = 10.0f, b = 8.0f;
-	float orbital_rotation_angle = 2.0f*glm::pi<float>()*elapsed_seconds / orbital_rotation_period;
-	float x = a * cos(orbital_rotation_angle);
-	float z = b * sin(orbital_rotation_angle);
+	auto rotation_angle = calc_rotation_angle(4.0f, elapsed_seconds);
+	float x, z;
+	std::tie(x, z) = calc_orbit_pos(10.0f, 8.0f, 20.0f, elapsed_seconds);
 
-	// Apply world (orbital) transformation to Earth
-	glm::vec3 world_pos = { x, 0.0f, z };
-	auto earth_orbit = glm::translate(glm::mat4(1.0f), world_pos);
+	auto earth_orbit = glm::translate(glm::mat4(1.0f), { x, 0.0f, z });
 	auto earth_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	auto mat_PV = mat_P * mat_V;
 	auto mat_M = earth_orbit * earth_rotate;
 	auto mat_PVM = mat_PV * mat_M;
 
@@ -181,16 +175,10 @@ void SimpleShapeApplication::frame()
 	pyramids[0].draw();
 
 	// Moon orbit
-	float moon_r = 3.0f;
-	float moon_rotation_period = 10.0;
-	rotation_angle = 2.0f*glm::pi<float>()*elapsed_seconds / moon_rotation_period;
-	orbital_rotation_angle = 2.0f*glm::pi<float>()*elapsed_seconds / moon_rotation_period;
-	x = moon_r * cos(orbital_rotation_angle);
-	z = moon_r * sin(orbital_rotation_angle);
+	rotation_angle = calc_rotation_angle(10.0f, elapsed_seconds);
+	std::tie(x, z) = calc_orbit_pos(3.0f, 3.0f, 10.0f, elapsed_seconds);
 
-	// Apply world (orbital) transformation to Moon
-	world_pos = { x, 0.0f, z };
-	auto moon_orbit = glm::translate(glm::mat4(1.0f), world_pos);
+	auto moon_orbit = glm::translate(glm::mat4(1.0f), { x, 0.0f, z });
 	auto moon_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, 1.0f, 0.0f));
 	auto moon_scale = glm::scale(glm::mat4(1.0f), { 0.5f, 0.5f, 0.5f });
 
@@ -201,6 +189,22 @@ void SimpleShapeApplication::frame()
 	glBufferSubData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_PVM[0]);
 
 	// Draw moon
+	pyramids[0].draw();
+
+	// Satelite orbit
+	rotation_angle = calc_rotation_angle(2.0f, elapsed_seconds);
+	std::tie(x, z) = calc_orbit_pos(1.5f, 1.5f, 2.0f, elapsed_seconds);
+
+	auto satelite_orbit = glm::translate(glm::mat4(1.0f), { x, z, 0.0f });
+	auto satelite_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+	auto satelite_scale = glm::scale(glm::mat4(1.0f), { 0.25f, 0.25f, 0.25f });
+
+	mat_M = earth_orbit * satelite_orbit * satelite_rotate * satelite_scale;
+	mat_PVM = mat_PV * mat_M;
+
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &mat_M[0]);
+	glBufferSubData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_PVM[0]);
+
 	pyramids[0].draw();
 
 	// End of "UBO scope"

@@ -48,4 +48,17 @@ private:
 
 	time_point<high_resolution_clock> m_start;
 
+	inline auto calc_orbit_pos(float ap, float pe, float period_seconds, float time_elapsed)
+	{
+		float orbital_rotation_angle = 2.0f*glm::pi<float>()*time_elapsed / period_seconds;
+		float a = ap * cos(orbital_rotation_angle);
+		float b = pe * sin(orbital_rotation_angle);
+
+		return std::make_pair(a, b);
+	}
+
+	inline float calc_rotation_angle(float period_seconds, float time_elapsed)
+	{
+		return 2.0f*glm::pi<float>()*time_elapsed / period_seconds;
+	}
 };

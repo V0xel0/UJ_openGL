@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <chrono>
 
 #include "Application/application.h"
 #include "Application/utils.h"
@@ -16,6 +17,8 @@
 #include "camera.h"
 #include "cameraControler.h"
 #include "pyramid.h"
+
+using namespace std::chrono;
 
 class SimpleShapeApplication : public xe::Application {
 public:
@@ -33,13 +36,16 @@ public:
 private:
 	GLuint ubo_handle_matrices_{};
 
-	glm::mat4 mat_M_;
+	glm::mat4 mat_M;
 
 	Camera m_camera{};
 	CameraControler m_cam_control{};
 	std::vector<Pyramid>pyramids;
 
 	// Raw data - application is the owner
-	std::vector<GLfloat> vertices;
-	std::vector<GLuint> indices;
+	std::vector<GLfloat> m_vertices;
+	std::vector<GLuint> m_indices;
+
+	time_point<high_resolution_clock> m_start;
+
 };

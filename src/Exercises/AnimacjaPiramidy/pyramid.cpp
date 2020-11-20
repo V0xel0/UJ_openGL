@@ -7,7 +7,6 @@ Pyramid::Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids) :
 	assert(verts != nullptr && ids != nullptr && "Invalid data in constructor");
 
 	GLuint vertexSize = 2 * sizeof(glm::vec3);
-	mat_M = glm::mat4(1.0f);
 
 	// Create VBO ID, activate, and allocate to GPU
 	glGenBuffers(1, &buffers_handles[VBO]);

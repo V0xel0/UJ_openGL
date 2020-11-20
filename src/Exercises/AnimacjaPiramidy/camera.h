@@ -123,6 +123,16 @@ public:
 		m_position += glm::normalize(glm::cross(m_axis_z, { 0.0f, 1.0f, 0.0f })) * speed;
 	}
 
+	void move_camera_up(float speed = 0.05f)
+	{
+		m_position += glm::vec3(0.0f, 1.0f, 0.0f) * speed;
+	}
+
+	void move_camera_down(float speed = 0.05f)
+	{
+		m_position -= glm::vec3(0.0f, 1.0f, 0.0f) * speed;
+	}
+
 private:
 	float m_fov;
 	float m_aspect;

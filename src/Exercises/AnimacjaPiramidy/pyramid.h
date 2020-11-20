@@ -24,6 +24,4 @@ private:
 	// not owning ptrs to raw data
 	std::vector<GLfloat> *vert_data; 
 	std::vector<GLuint> *indices;
-
-	glm::mat4  mat_M;
 };

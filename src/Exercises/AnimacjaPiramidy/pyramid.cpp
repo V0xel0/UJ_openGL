@@ -12,7 +12,7 @@ Pyramid::Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids) :
 	assert(verts != nullptr && ids != nullptr && "Invalid data in constructor");
 
 	GLuint vertexSize = 2 * sizeof(glm::vec3);
-	hasBeenStolen = false;
+	has_been_stolen = false;
 
 	// Create VBO ID, activate, and allocate to GPU
 	glGenBuffers(1, &buffers_handles[VBO]);
@@ -54,7 +54,7 @@ Pyramid::~Pyramid()
 	// Also it very very prone to pre-deletion bug if used in owning container (like std::vector) !
 
 	// If we haven't given out control of external resource to other 
-	if(!hasBeenStolen)
+	if(!has_been_stolen)
 	{
 		glDeleteBuffers(1, &buffers_handles[VBO]);
 		glDeleteBuffers(1, &buffers_handles[EBO]);

@@ -49,7 +49,7 @@ void SimpleShapeApplication::init()
 
 	m_vertices = {
 		// Pyramid face 1
-		0.0f, 0.5f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
 
 		-0.5f, 0.0f, 0.5f,
@@ -59,7 +59,7 @@ void SimpleShapeApplication::init()
 		1.0f, 0.0f, 0.0f,
 
 		// Pyramid face 2
-		0.0f, 0.5f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 
 		0.5f, 0.0f, 0.5f,
@@ -69,7 +69,7 @@ void SimpleShapeApplication::init()
 		0.0f, 1.0f, 0.0f,
 
 		// Pyramid face 3
-		0.0f, 0.5f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 1.0f,
 
 		0.5f, 0.0f, -0.5f,
@@ -79,7 +79,7 @@ void SimpleShapeApplication::init()
 		0.0f, 0.0f, 1.0f,
 
 		// Pyramid face 4
-		0.0f, 0.5f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 		1.0f, 0.0f, 1.0f,
 
 		-0.5f, 0.0f, -0.5f,
@@ -160,7 +160,7 @@ void SimpleShapeApplication::frame()
 	std::tie(x, z) = calc_orbit_pos(10.0f, 8.0f, 20.0f, elapsed_seconds);
 
 	auto earth_orbit = glm::translate(glm::mat4(1.0f), { x, 0.0f, z });
-	auto earth_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, 1.0f, 0.0f));
+	auto earth_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, -1.0f, 0.0f));
 
 	auto mat_M = earth_orbit * earth_rotate;
 	auto mat_PVM = mat_PV * mat_M;
@@ -180,7 +180,7 @@ void SimpleShapeApplication::frame()
 	std::tie(x, z) = calc_orbit_pos(3.0f, 3.0f, 10.0f, elapsed_seconds);
 
 	auto moon_orbit = glm::translate(glm::mat4(1.0f), { x, 0.0f, z });
-	auto moon_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, 1.0f, 0.0f));
+	auto moon_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, -1.0f, 0.0f));
 	auto moon_scale = glm::scale(glm::mat4(1.0f), { 0.5f, 0.5f, 0.5f });
 
 	mat_M = earth_orbit * moon_orbit * moon_rotate * moon_scale;
@@ -196,11 +196,12 @@ void SimpleShapeApplication::frame()
 	rotation_angle = calc_rotation_angle(2.0f, elapsed_seconds);
 	std::tie(x, z) = calc_orbit_pos(1.5f, 1.5f, 2.0f, elapsed_seconds);
 
+	auto rotate_pyramid = glm::rotate(glm::mat4(1.0), glm::radians(90.f), { 1.0f, 0.0f, 0.0f });
 	auto satelite_orbit = glm::translate(glm::mat4(1.0f), { x, z, 0.0f });
 	auto satelite_rotate = glm::rotate(glm::mat4(1.0f), rotation_angle, glm::vec3(0.0f, 0.0f, 1.0f));
 	auto satelite_scale = glm::scale(glm::mat4(1.0f), { 0.25f, 0.25f, 0.25f });
 
-	mat_M = earth_orbit * satelite_orbit * satelite_rotate * satelite_scale;
+	mat_M = earth_orbit * satelite_orbit * satelite_rotate * rotate_pyramid * satelite_scale;
 	mat_PVM = mat_PV * mat_M;
 
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &mat_M[0]);

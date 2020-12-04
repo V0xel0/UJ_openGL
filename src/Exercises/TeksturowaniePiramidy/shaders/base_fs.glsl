@@ -1,6 +1,8 @@
 #version 410
 
-in vec3 vertex_color;
+in vec2 vertex_uv;
+
+uniform sampler2D diffuse_map; 
 
 layout(std140) uniform Modifiers {
 	float light_intenstiy;
@@ -10,14 +12,7 @@ layout(std140) uniform Modifiers {
 layout(location=0) out vec4 vFragColor;
 
 void main() {
-	vec2 resolution = vec2(650, 480);
-	vec2 uv = gl_FragCoord.xy / resolution;
-	#if 0
-	vFragColor = vec4(uv * vec2(1.33), 0.5, 1.0);
-	#endif
-
-	#if 1
+	vec4 texColor = texture(diffuse_map, vertex_uv);
+	vFragColor.rgb = texColor.rgb;
 	vFragColor.a = 1.0f;
-	vFragColor.rgb = light_intenstiy*light_color*vertex_color.rgb;
-	#endif	
 }

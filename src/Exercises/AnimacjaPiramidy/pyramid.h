@@ -23,7 +23,7 @@ public:
 private:
 	GLuint vao_handle;
 	GLuint buffers_handles[TypeCount];
-	// not owning ptrs to raw data
+
 	std::vector<GLfloat> vert_data;
 	std::vector<GLuint> indices;
 

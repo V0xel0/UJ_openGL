@@ -78,6 +78,17 @@ void SimpleShapeApplication::init()
 	glCullFace(GL_BACK);
 
 	glUseProgram(program);
+
+	// Texture location
+	auto  u_diffuse_map_location = glGetUniformLocation(program, "diffuse_map");
+	if (u_diffuse_map_location == -1)
+	{
+		std::cerr << "Cannot find uniform diffuse_map\n";
+	}
+	else
+	{
+		glUniform1ui(u_diffuse_map_location, 0);
+	}
 }
 
 void SimpleShapeApplication::frame()

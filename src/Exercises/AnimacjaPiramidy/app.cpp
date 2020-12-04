@@ -47,71 +47,9 @@ void SimpleShapeApplication::init()
 		std::cerr << std::string(PROJECT_DIR) + "/shaders/base_fs.glsl" << " shader files" << std::endl;
 	}
 
-	m_vertices = {
-		// Pyramid face 1
-		0.0f, 1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-
-		-0.5f, 0.0f, 0.5f,
-		1.0f, 0.0f, 0.0f,
-
-		0.5f, 0.0f, 0.5f,
-		1.0f, 0.0f, 0.0f,
-
-		// Pyramid face 2
-		0.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-
-		0.5f, 0.0f, 0.5f,
-		0.0f, 1.0f, 0.0f,
-
-		0.5f, 0.0f, -0.5f,
-		0.0f, 1.0f, 0.0f,
-
-		// Pyramid face 3
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f,
-
-		0.5f, 0.0f, -0.5f,
-		0.0f, 0.0f, 1.0f,
-
-		-0.5f, 0.0f, -0.5f,
-		0.0f, 0.0f, 1.0f,
-
-		// Pyramid face 4
-		0.0f, 1.0f, 0.0f,
-		1.0f, 0.0f, 1.0f,
-
-		-0.5f, 0.0f, -0.5f,
-		1.0f, 0.0f, 1.0f,
-
-		-0.5f, 0.0f, 0.5f,
-		1.0f, 0.0f, 1.0f,
-
-		// Pyramid base
-		-0.5f, 0.0f, -0.5f,
-		1.0f, 1.0f, 0.0f,
-
-		-0.5f, 0.0f, 0.5f,
-		1.0f, 1.0f, 0.0f,
-
-		0.5f, 0.0f, 0.5f,
-		1.0f, 1.0f, 0.0f,
-
-		0.5f, 0.0f, -0.5f,
-		1.0f, 1.0f, 0.0f,
-	};
-
-	m_indices = {
-		12, 14, 13, 
-		15, 14, 12
-	};
-
 	GLuint ubo_handle_color{};
 
-	// Pyramids(Mesh) creation
-	pyramids.reserve(10);
-	pyramids.emplace_back( &m_vertices, &m_indices );
+	pyramid = std::make_unique<Pyramid>();
 
 	float ubo_data_color[] = { 1.7f, 1.0f, 0.95f, 1.0f };
 
@@ -173,7 +111,7 @@ void SimpleShapeApplication::frame()
 	glBufferSubData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_PVM[0]);
 
 	// Draw earth
-	pyramids[0].draw();
+	pyramid->draw();
 
 	// Moon orbit
 	rotation_angle = calc_rotation_angle(10.0f, elapsed_seconds);
@@ -190,7 +128,7 @@ void SimpleShapeApplication::frame()
 	glBufferSubData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_PVM[0]);
 
 	// Draw moon
-	pyramids[0].draw();
+	pyramid->draw();
 
 	// Satelite orbit
 	rotation_angle = calc_rotation_angle(2.0f, elapsed_seconds);
@@ -207,7 +145,7 @@ void SimpleShapeApplication::frame()
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &mat_M[0]);
 	glBufferSubData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), sizeof(glm::mat4), &mat_PVM[0]);
 
-	pyramids[0].draw();
+	pyramid->draw();
 
 	// End of "UBO scope"
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);

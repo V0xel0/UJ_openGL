@@ -29,7 +29,7 @@ private:
 
 	bool has_been_stolen;
 
-	friend void change_gl_handles_ownership(Pyramid& a, Pyramid& other)
+	void change_gl_handles_ownership(Pyramid& a, Pyramid& other)
 	{
 		a.vao_handle = other.vao_handle;
 		a.buffers_handles[VBO] = other.buffers_handles[VBO];

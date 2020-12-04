@@ -15,7 +15,7 @@ class Pyramid
 	};
 
 public:
-	Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids);
+	Pyramid();
 	~Pyramid();
 
 	void draw();
@@ -24,18 +24,18 @@ private:
 	GLuint vao_handle;
 	GLuint buffers_handles[TypeCount];
 	// not owning ptrs to raw data
-	std::vector<GLfloat> *vert_data; 
-	std::vector<GLuint> *indices;
+	std::vector<GLfloat> vert_data; 
+	std::vector<GLuint> indices;
 
 	bool has_been_stolen;
 
-	friend void change_gl_handles_ownership(Pyramid& a, Pyramid& other)
+	void change_gl_handles_ownership(Pyramid& a, Pyramid& other)
 	{
 		a.vao_handle = other.vao_handle;
 		a.buffers_handles[VBO] = other.buffers_handles[VBO];
 		a.buffers_handles[EBO] = other.buffers_handles[EBO];
-		a.vert_data = other.vert_data;
-		a.indices = other.indices;
+		a.vert_data.swap(other.vert_data);
+		a.indices.swap(other.indices);
 		other.has_been_stolen = true;
 	}
 

@@ -1,15 +1,72 @@
 #include "pyramid.h"
 #include <cassert>
 
-Pyramid::Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids) :
-	vert_data(verts), indices(ids)
+Pyramid::Pyramid()
 {
+	vert_data = {
+		// Pyramid face 1
+		0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		-0.5f, 0.0f, 0.5f,
+		1.0f, 0.0f, 0.0f,
+
+		0.5f, 0.0f, 0.5f,
+		1.0f, 0.0f, 0.0f,
+
+		// Pyramid face 2
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+
+		0.5f, 0.0f, 0.5f,
+		0.0f, 1.0f, 0.0f,
+
+		0.5f, 0.0f, -0.5f,
+		0.0f, 1.0f, 0.0f,
+
+		// Pyramid face 3
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+
+		0.5f, 0.0f, -0.5f,
+		0.0f, 0.0f, 1.0f,
+
+		-0.5f, 0.0f, -0.5f,
+		0.0f, 0.0f, 1.0f,
+
+		// Pyramid face 4
+		0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 1.0f,
+
+		-0.5f, 0.0f, -0.5f,
+		1.0f, 0.0f, 1.0f,
+
+		-0.5f, 0.0f, 0.5f,
+		1.0f, 0.0f, 1.0f,
+
+		// Pyramid base
+		-0.5f, 0.0f, -0.5f,
+		1.0f, 1.0f, 0.0f,
+
+		-0.5f, 0.0f, 0.5f,
+		1.0f, 1.0f, 0.0f,
+
+		0.5f, 0.0f, 0.5f,
+		1.0f, 1.0f, 0.0f,
+
+		0.5f, 0.0f, -0.5f,
+		1.0f, 1.0f, 0.0f,
+	};
+
+	indices = {
+		12, 14, 13,
+		15, 14, 12
+	};
+
 	//(note) Doing stuff that handles external resource in constructor is not a good practice due
 	// to possible problems with RVO/NRVO - compiler can skip creating object if it is redundant
 	// even if constructor and/or destructor have side effects! Also we could easily construct/destruct
 	// two times for external resource - cause of creation of temp objects in some containers (like std::vector)
-
-	assert(verts != nullptr && ids != nullptr && "Invalid data in constructor");
 
 	GLuint vertexSize = 2 * sizeof(glm::vec3);
 	has_been_stolen = false;
@@ -17,13 +74,13 @@ Pyramid::Pyramid(std::vector<GLfloat> *verts, std::vector<GLuint> *ids) :
 	// Create VBO ID, activate, and allocate to GPU
 	glGenBuffers(1, &buffers_handles[VBO]);
 	glBindBuffer(GL_ARRAY_BUFFER, buffers_handles[VBO]);
-	glBufferData(GL_ARRAY_BUFFER, vert_data->size() * sizeof(GLfloat), vert_data->data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vert_data.size() * sizeof(GLfloat), vert_data.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Create EBO ID, activate, and allocate to GPU 
 	glGenBuffers(1, &buffers_handles[EBO]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers_handles[EBO]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->size() * sizeof(GLuint), indices->data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 
 	// Create VAO ID and activate first VAO
 	glGenVertexArrays(1, &vao_handle);

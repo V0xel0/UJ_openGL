@@ -40,9 +40,5 @@ private:
 
 	Camera m_camera{};
 	CameraControler m_cam_control{};
-	std::vector<Pyramid>pyramids;
-
-	// Raw data - application is the owner
-	std::vector<GLfloat> m_vertices;
-	std::vector<GLuint> m_indices;
+	std::unique_ptr<Pyramid> pyramid;
 };
